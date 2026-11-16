@@ -19,18 +19,22 @@ export function CartDrawer() {
     <div className={`fixed inset-0 z-50 ${open ? "" : "pointer-events-none"}`} aria-hidden={!open}>
       <div
         onClick={() => setOpen(false)}
-        className={`absolute inset-0 bg-black/50 transition-opacity ${open ? "opacity-100" : "opacity-0"}`}
+        className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${
+          open ? "opacity-100 ease-out" : "opacity-0 ease-in"
+        }`}
       />
       <aside
         role="dialog"
         aria-label="Your order"
-        className={`absolute right-0 top-0 h-full w-full max-w-md bg-card shadow-2xl transition-transform ${
-          open ? "translate-x-0" : "translate-x-full"
+        className={`absolute right-0 top-0 h-full w-full max-w-md bg-card transition-[translate,box-shadow,visibility] ${
+          open
+            ? "visible translate-x-0 shadow-2xl duration-300 ease-out"
+            : "invisible translate-x-full duration-200 ease-in"
         }`}
       >
         <button
           onClick={() => setOpen(false)}
-          className="absolute right-4 top-4 z-10 text-sm font-semibold text-muted"
+          className="absolute right-4 top-4 z-10 text-sm font-semibold text-muted transition-colors hover:text-ink"
         >
           Close
         </button>

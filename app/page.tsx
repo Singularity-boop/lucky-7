@@ -1,10 +1,11 @@
 import { ModeToggle } from "./components/CartPanel";
 import { HeroSlider } from "./components/HeroSlider";
 import { OrderMenu } from "./components/OrderMenu";
+import { PageTransition } from "./components/PageTransition";
 
 export default function Home() {
   return (
-    <>
+    <PageTransition>
       <HeroSlider />
       <div className="flex items-center gap-3 bg-card px-4 py-3 md:hidden">
         <ModeToggle className="w-48 shrink-0" />
@@ -15,6 +16,6 @@ export default function Home() {
         </p>
       </div>
       <OrderMenu />
-    </>
+    </PageTransition>
   );
 }

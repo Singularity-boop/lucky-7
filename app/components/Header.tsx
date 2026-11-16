@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { money, store } from "../lib/menu";
 import { useCart } from "./cart";
@@ -9,39 +10,43 @@ export function Header() {
   const { count, total, setOpen } = useCart();
 
   return (
-    <header className="sticky top-0 z-30 h-[60px] bg-char text-white">
+    <header
+      className="sticky top-0 z-30 h-[64px] bg-white text-ink shadow-sm"
+      style={{ viewTransitionName: "site-header" }}
+    >
       <div className="mx-auto flex h-full max-w-7xl items-center gap-4 px-4">
-        <Link href="/" className="flex min-w-0 items-center gap-2 leading-none">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand font-display text-2xl font-bold">
-            7
-          </span>
-          <span className="min-w-0">
-            <span className="block font-display text-xl font-bold uppercase tracking-wide">
-              Lucky 7
-            </span>
-            <span className="block truncate text-[10px] font-semibold uppercase tracking-[0.14em] text-white/60">
-              <span className="sm:hidden">Deli · Fried Chicken</span>
-              <span className="hidden sm:inline">{store.tagline}</span>
-            </span>
-          </span>
+        <Link
+          href="/"
+          transitionTypes={["nav-back"]}
+          className="flex shrink-0 items-center"
+          aria-label="Lucky 7 Deli and Market, home"
+        >
+          <Image
+            src="/brand/logo.svg"
+            alt="Lucky 7 Deli and Market"
+            width={678}
+            height={178}
+            priority
+            className="h-[34px] w-auto sm:h-[44px]"
+          />
         </Link>
 
-        <div className="ml-4 hidden items-center gap-2 text-xs text-white/70 xl:flex">
-          <span className="h-2 w-2 rounded-full bg-green-400" />
+        <div className="ml-4 hidden items-center gap-2 text-xs text-muted xl:flex">
+          <span className="h-2 w-2 rounded-full bg-teal" />
           {store.hours} · {store.address}, Lawrence
         </div>
 
         <div className="ml-auto flex items-center gap-3">
-          <ModeToggle className="hidden w-52 bg-white/10 md:grid [&_button[aria-pressed=false]]:text-white/70 [&_button[aria-pressed=true]]:bg-brand" />
+          <ModeToggle className="hidden w-52 md:grid" />
           <a
             href={`tel:${store.phone}`}
-            className="hidden text-sm font-semibold text-white/80 hover:text-white sm:block"
+            className="hidden text-sm font-semibold text-brand hover:text-brand-dark sm:block"
           >
             {store.phone}
           </a>
           <button
             onClick={() => setOpen(true)}
-            className="relative flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-brand px-3 py-2 text-sm font-bold hover:bg-brand-dark sm:px-4 lg:hidden"
+            className="relative flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-action px-3 py-2 text-sm font-bold text-white transition hover:bg-action-dark active:scale-95 sm:px-4 lg:hidden"
             aria-label={`Open cart, ${count} items`}
           >
             <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
@@ -52,10 +57,12 @@ export function Header() {
             {count > 0 && (
               <>
                 <span className="tabular-nums sm:hidden">{money(total)}</span>
-                <span className="hidden rounded-full bg-white/20 px-2 tabular-nums sm:inline">
+                <span key={`pill-${count}`} className="anim-bump hidden rounded-full bg-white/20 px-2 tabular-nums sm:inline-block">
                   {count} · {money(total)}
                 </span>
-                <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-gold px-1 text-[11px] text-char sm:hidden">
+                <span
+                  key={`badge-${count}`}
+                  className="anim-bump absolute -left-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-navy px-1 text-[11px] text-white ring-2 ring-white sm:hidden">
                   {count}
                 </span>
               </>
@@ -63,6 +70,7 @@ export function Header() {
           </button>
         </div>
       </div>
+      <div aria-hidden className="pinstripe absolute inset-x-0 bottom-0" />
     </header>
   );
 }

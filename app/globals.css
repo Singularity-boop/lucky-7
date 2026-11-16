@@ -1,34 +1,55 @@
 @import "tailwindcss";
 
-/* Lucky 7 brand: fryer red, mustard gold, charcoal, on a warm off-white. */
+/* Lucky 7 brand, taken from the logo: blue wordmark, teal 7, red pinstripes. */
 :root {
-  --brand: #d62300;
-  --brand-dark: #a81b00;
-  --gold: #ffb81c;
-  --char: #1b1b1b;
-  --cream: #f7f4ef;
+  --brand: #1a52a8; /* logo blue: links, prices, headings, active tabs */
+  --brand-dark: #133f84;
+  --navy: #0e2a5c; /* dark surfaces: footer, hero, placeholder tiles */
+  --teal: #2e9a7e; /* the 7: decorative only, below AA for text */
+  --teal-dark: #23806a; /* teal that carries white text (AA) */
+  --teal-light: #7ed8be; /* teal accents on navy */
+  --action: #d93a2b; /* pinstripe red: add to cart, checkout, place order */
+  --action-dark: #b52e21;
+  --page: #f6f8fb;
+  --soft: #edf1f7;
   --card: #ffffff;
-  --ink: #1b1b1b;
-  --muted: #6b6560;
-  --line: #e8e2d9;
+  --ink: #14203a;
+  --muted: #5a6478;
+  --line: #dfe5ee;
+
+  /* Motion: one set of curves and durations for the whole site. */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 150ms;
+  --dur: 220ms;
+  --dur-slow: 320ms;
 }
 
 @theme inline {
   --color-brand: var(--brand);
   --color-brand-dark: var(--brand-dark);
-  --color-gold: var(--gold);
-  --color-char: var(--char);
-  --color-cream: var(--cream);
+  --color-navy: var(--navy);
+  --color-teal: var(--teal);
+  --color-teal-dark: var(--teal-dark);
+  --color-teal-light: var(--teal-light);
+  --color-action: var(--action);
+  --color-action-dark: var(--action-dark);
+  --color-page: var(--page);
+  --color-soft: var(--soft);
   --color-card: var(--card);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-line: var(--line);
+  --ease-out: var(--ease-out);
+  --ease-in: var(--ease-in);
+  --ease-in-out: var(--ease-in-out);
   --font-sans: var(--font-body);
   --font-display: var(--font-display);
 }
 
 body {
-  background: var(--cream);
+  background: var(--page);
   color: var(--ink);
 }
 
@@ -37,4 +58,199 @@ body {
 }
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+/* The logo's blue/red pinstripe, as a thin divider. */
+.pinstripe {
+  height: 6px;
+  background: linear-gradient(
+    to bottom,
+    var(--brand) 0 2px,
+    transparent 2px 3px,
+    var(--action) 3px 4px,
+    transparent 4px 5px,
+    var(--brand) 5px 6px
+  );
+}
+
+/* ---------- Motion ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes slide {
+  from {
+    translate: var(--slide-offset);
+  }
+  to {
+    translate: 0;
+  }
+}
+@keyframes sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@keyframes bump {
+  40% {
+    transform: scale(1.25);
+  }
+}
+@keyframes pop {
+  0% {
+    transform: scale(0.6);
+  }
+  60% {
+    transform: scale(1.15);
+  }
+}
+@keyframes row-in {
+  from {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+}
+
+/* Backdrops behind the item popup */
+.backdrop-in {
+  animation: fade var(--dur) var(--ease-out) both;
+}
+.backdrop-out {
+  animation: fade var(--dur) var(--ease-in) reverse both;
+}
+
+/* Item popup: bottom sheet on phones, fade + scale on larger screens */
+.modal-in {
+  animation: sheet-in var(--dur-slow) var(--ease-out) both;
+}
+.modal-out {
+  animation: sheet-in var(--dur) var(--ease-in) reverse both;
+}
+@media (min-width: 640px) {
+  .modal-in {
+    animation: pop-in var(--dur) var(--ease-out) both;
+  }
+  .modal-out {
+    animation: pop-in var(--dur-fast) var(--ease-in) reverse both;
+  }
+}
+
+.anim-rise {
+  animation: rise var(--dur-slow) var(--ease-out) both;
+}
+.anim-bump {
+  animation: bump var(--dur-slow) var(--ease-out);
+}
+.anim-pop {
+  animation: pop var(--dur-slow) var(--ease-out);
+}
+
+/* Cart rows: grow in, collapse out (rows are grids so height can animate) */
+.cart-row {
+  display: grid;
+  grid-template-rows: 1fr;
+  animation: row-in var(--dur) var(--ease-out) both;
+  transition:
+    grid-template-rows var(--dur) var(--ease-in-out),
+    opacity var(--dur-fast) var(--ease-in);
+}
+.cart-row[data-leaving] {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+.cart-row > * {
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Photos fade in once loaded instead of popping */
+.photo {
+  transition:
+    opacity var(--dur-slow) var(--ease-out),
+    scale 500ms var(--ease-out);
+}
+.photo[data-loading] {
+  opacity: 0;
+}
+
+/* ---------- Page transitions (React <ViewTransition>) ---------- */
+
+::view-transition {
+  pointer-events: none;
+}
+::view-transition-old(.nav-forward) {
+  --slide-offset: -48px;
+  animation:
+    var(--dur-fast) var(--ease-in) both fade reverse,
+    var(--dur-slow) var(--ease-in-out) both slide reverse;
+}
+::view-transition-new(.nav-forward) {
+  --slide-offset: 48px;
+  animation:
+    var(--dur) var(--ease-out) var(--dur-fast) both fade,
+    var(--dur-slow) var(--ease-in-out) both slide;
+}
+::view-transition-old(.nav-back) {
+  --slide-offset: 48px;
+  animation:
+    var(--dur-fast) var(--ease-in) both fade reverse,
+    var(--dur-slow) var(--ease-in-out) both slide reverse;
+}
+::view-transition-new(.nav-back) {
+  --slide-offset: -48px;
+  animation:
+    var(--dur) var(--ease-out) var(--dur-fast) both fade,
+    var(--dur-slow) var(--ease-in-out) both slide;
+}
+/* Keep the header still while pages slide underneath it */
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-header) {
+  display: none;
+}
+::view-transition-new(site-header) {
+  animation: none;
+}
+
+/* ---------- Reduced motion: no movement, near-instant changes ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
 }

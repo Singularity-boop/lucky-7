@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { money, type MenuCategory, type MenuItem } from "../lib/menu";
 import { useCart } from "./cart";
 import { ItemPhoto } from "./ItemPhoto";
@@ -20,16 +20,29 @@ export function ItemModal({
   const [option, setOption] = useState(choice?.options[0]);
   const [qty, setQty] = useState(1);
   const [note, setNote] = useState("");
+  const [closing, setClosing] = useState(false);
+  const done = useRef(false);
+
+  // Play the exit animation, then unmount. The timer is a fallback in case animationend never fires.
+  const finish = useCallback(() => {
+    if (done.current) return;
+    done.current = true;
+    onClose();
+  }, [onClose]);
+  const close = useCallback(() => {
+    setClosing(true);
+    window.setTimeout(finish, 400);
+  }, [finish]);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [onClose]);
+  }, [close]);
 
   const unit = item.sizes
     ? (item.sizes.find((s) => s.label === size) ?? item.sizes[0]).price
@@ -37,22 +50,28 @@ export function ItemModal({
 
   function submit() {
     add({ itemId: item.id, size, option, note: note.trim() || undefined, qty });
-    onClose();
+    close();
   }
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4">
-      <div className="absolute inset-0 bg-black/55" onClick={onClose} />
+      <div
+        className={`absolute inset-0 bg-black/55 ${closing ? "backdrop-out" : "backdrop-in"}`}
+        onClick={close}
+      />
       <div
         role="dialog"
         aria-modal="true"
         aria-label={item.name}
-        className="relative flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl bg-card shadow-2xl sm:rounded-3xl"
+        onAnimationEnd={(e) => closing && e.target === e.currentTarget && finish()}
+        className={`relative flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl bg-card shadow-2xl sm:rounded-3xl ${
+          closing ? "modal-out pointer-events-none" : "modal-in"
+        }`}
       >
         <button
-          onClick={onClose}
+          onClick={close}
           aria-label="Close"
-          className="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-xl shadow"
+          className="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-xl shadow transition-transform hover:scale-105 active:scale-95"
         >
           ×
         </button>
@@ -67,7 +86,7 @@ export function ItemModal({
             <fieldset className="mt-5">
               <legend className="mb-2 flex w-full items-center justify-between text-sm font-bold">
                 Choose size
-                <span className="rounded bg-cream px-2 py-0.5 text-[11px] font-semibold uppercase text-muted">
+                <span className="rounded bg-soft px-2 py-0.5 text-[11px] font-semibold uppercase text-muted">
                   Required
                 </span>
               </legend>
@@ -147,7 +166,7 @@ export function ItemModal({
           </div>
           <button
             onClick={submit}
-            className="flex h-12 flex-1 items-center justify-between rounded-full bg-brand px-6 font-bold text-white hover:bg-brand-dark"
+            className="flex h-12 flex-1 items-center justify-between rounded-full bg-action px-6 font-bold text-white transition hover:bg-action-dark active:scale-[0.98]"
           >
             <span>Add to cart</span>
             <span className="tabular-nums">{money(unit * qty)}</span>

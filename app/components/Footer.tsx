@@ -1,11 +1,18 @@
+import Image from "next/image";
 import { store } from "../lib/menu";
 
 export function Footer() {
   return (
-    <footer className="mt-10 bg-char pb-24 text-white/75 lg:pb-0">
+    <footer className="mt-10 bg-navy pb-24 text-white/75 lg:pb-0">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 text-sm sm:grid-cols-3">
         <div>
-          <p className="font-display text-2xl font-bold uppercase text-white">Lucky 7</p>
+          <Image
+            src="/brand/logo-white.svg"
+            alt="Lucky 7 Deli and Market"
+            width={678}
+            height={178}
+            className="mb-3 h-12 w-auto"
+          />
           <p className="font-semibold uppercase tracking-wider">{store.tagline}</p>
           <p className="mt-3">{store.quality}.</p>
         </div>
@@ -20,7 +27,7 @@ export function Footer() {
             href={store.mapUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-2 inline-block font-semibold text-gold"
+            className="mt-2 inline-block font-semibold text-teal-light"
           >
             Get directions
           </a>

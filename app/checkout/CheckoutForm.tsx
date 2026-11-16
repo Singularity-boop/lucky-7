@@ -27,12 +27,13 @@ export function CheckoutForm() {
           Order <strong className="text-ink">#{placed.number}</strong> ·{" "}
           {money(placed.total)} · {placed.mode === "pickup" ? "Pickup" : "Delivery"}
         </p>
-        <p className="mt-4 rounded-lg bg-cream p-3 text-sm text-muted">
+        <p className="mt-4 rounded-lg bg-soft p-3 text-sm text-muted">
           This is a preview. No order was sent and no payment was taken.
         </p>
         <Link
           href="/"
-          className="mt-6 inline-block rounded-full bg-brand px-6 py-2.5 font-bold text-white"
+          transitionTypes={["nav-back"]}
+          className="mt-6 inline-block rounded-full bg-action px-6 py-2.5 font-bold text-white transition hover:bg-action-dark active:scale-[0.98]"
         >
           Back to menu
         </Link>
@@ -46,7 +47,8 @@ export function CheckoutForm() {
         <p className="text-muted">Your cart is empty.</p>
         <Link
           href="/"
-          className="mt-4 inline-block rounded-full bg-brand px-6 py-2.5 font-bold text-white"
+          transitionTypes={["nav-back"]}
+          className="mt-4 inline-block rounded-full bg-action px-6 py-2.5 font-bold text-white transition hover:bg-action-dark active:scale-[0.98]"
         >
           Browse the menu
         </Link>
@@ -140,7 +142,7 @@ export function CheckoutForm() {
         </div>
         <button
           type="submit"
-          className="mt-5 hidden w-full rounded-full bg-brand py-3 font-bold uppercase tracking-wider text-white hover:bg-brand-dark lg:block"
+          className="mt-5 hidden w-full rounded-full bg-action py-3 font-bold uppercase tracking-wider text-white transition hover:bg-action-dark active:scale-[0.98] lg:block"
         >
           Place order · {money(total)}
         </button>
@@ -149,7 +151,7 @@ export function CheckoutForm() {
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white/95 p-3 backdrop-blur lg:hidden">
         <button
           type="submit"
-          className="flex h-14 w-full items-center justify-between rounded-full bg-brand px-6 font-bold text-white"
+          className="flex h-14 w-full items-center justify-between rounded-full bg-action px-6 font-bold text-white transition active:scale-[0.98]"
         >
           <span>Place order</span>
           <span className="tabular-nums">{money(total)}</span>
